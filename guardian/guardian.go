@@ -12,17 +12,25 @@ const (
 	defaultScoreThreshold = 0.5
 )
 
-func RequestGuardian(in GuardianInput) (out GuardianOutput, err error) {
+func validateInput(in GuardianInput) error {
 	if in.ScoreThreshold < 0.0 || 1.0 < in.ScoreThreshold {
-		return out, fmt.Errorf("ScoreThreshold is out of range")
+		return ErrScoreThresholdOutOfRange
+	}
+
+	if in.APIKey == "" {
+		return ErrAPIKeyRequired
+	}
+
+	return nil
+}
+
+func RequestGuardian(in GuardianInput) (out GuardianOutput, err error) {
+	if err := validateInput(in); err != nil {
+		return out, fmt.Errorf("Validation Error: %q ", err.Error())
 	}
 	// user not set
 	if in.ScoreThreshold == 0 {
 		in.ScoreThreshold = defaultScoreThreshold
-	}
-
-	if in.APIKey == "" {
-		return out, fmt.Errorf("Error API key is required.")
 	}
 
 	// リクエストを作成

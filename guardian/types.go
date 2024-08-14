@@ -1,5 +1,9 @@
 package guardian
 
+import (
+	"errors"
+)
+
 type GuardianInput struct {
 	Text           string `json:"text"`
 	APIKey         string
@@ -26,3 +30,8 @@ type GuardianCategoryScores struct {
 	Sexual     float64 `json:"sexual"`
 	Violence   float64 `json:"violence"`
 }
+
+var (
+	ErrScoreThresholdOutOfRange = errors.New("ScoreThreshold is out of range")
+	ErrAPIKeyRequired           = errors.New("Error API key is required")
+)
